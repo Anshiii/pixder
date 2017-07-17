@@ -1,0 +1,19 @@
+{
+  "name": "spider-pixiv",
+  "version": "1.0.0",
+  "description": "",
+  "main": "spider.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "node-fetch": "^1.7.1"
+  },
+  "protocol": "inspector",
+  "dependencies": {
+    "async": "^2.5.0"
+  }
+}
