@@ -22,8 +22,7 @@
  获取搜索关键词返回的作品，默认只返回前50项。
  * getIdFromFollowing()  
   获取当前关注用户的id和昵称，保存为followingIdList.json
- * Option
-<pre>
+ * Option<pre>
   {
   rate:Number,		     //返回大于该分数的图片
   time:String/Array, 	//格式如'20170707'如果参数为字符串，则默认为该从日期至今的作品，如果为数组，则为数组内两个日期之间的作品
