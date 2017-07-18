@@ -5,10 +5,10 @@
 /*默认任务（题外话：有种写gulp的感觉...gulp好像是流任务著称*/
 
 
-const spider = require('./spider.js');
+const spider = require('./src/spider.js');
 
 
-
+spider.getImagesByUserId(1565632);
 
 
 
