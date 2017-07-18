@@ -5,7 +5,6 @@ const getPage = require('../middleware/getPage');
 const getImageByImgid = require('../core/getImageByImgid');
 const fs = require('fs');
 const saveFile = require('../middleware/saveFile');
-var ProgressBar = require('progress');
 
 
 let getImageIdListFromPage = function ($) {
@@ -42,9 +41,7 @@ module.exports = async function getImageByUserId(id, option) {
 
 	saveFile(JSON.stringify(list), `${process.cwd()}/data/${id}/imageList.json`);
 
-	let bar = new ProgressBar(':bar :current/:total', {total: list.length});
 	list.forEach(item => {
-	  bar.tick();
 	  getImageByImgid(item, option)
 	})
   })
