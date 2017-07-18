@@ -16,11 +16,11 @@
 ## Api
  * getImagesByUserId(id,option)  
  获取某个用户id的投稿作品
- * getImageFromRank(option)  
+ * getImageFromRank(option) //未完成  
  获取插画排行榜上的投稿作品，默认为当时的排行榜。
- * getImageByKeyWord(key，option)  
+ * getImageByKeyWord(key，option) //未完成  
  获取搜索关键词返回的作品，默认只返回前50项。
- * getIdFromFollowing()  
+ * getFollowingIdList()  
   获取当前关注用户的id和昵称，保存为followingIdList.json
  * Option<pre>
   {
