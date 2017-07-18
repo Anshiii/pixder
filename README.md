@@ -1,17 +1,19 @@
-#pixiv爬虫
-爬取pixiv.net的图片并保存。
-默认的任务是爬取个人关注画师昵称和id列表，并以json格式保存
+
+# pixider 
+爬取pixiv.net的图片并保存。  
+默认的任务是爬取个人关注画师昵称和id列表，并以json格式保存  
 
 
-##使用
-不好意思...暂时只写了个半自动的
-需要先自行登录，将主页响应的cookie写在`config/config.js`的配置里。
+## 使用
+不好意思...暂时只写了个半自动的  
+需要先自行登录，将主页响应的cookie写在`config/config.js`的配置里。  
 
-##运行
-略
+## 运行
+
+暂时还没有写脚本，
 
 
-##Api
+## Api
  * getImagesByUserId(id,option)  
  获取某个用户id的投稿作品
  * getImageFromRank(option)  
@@ -28,5 +30,3 @@
   day:String		   //仅获取该日期的数据
   }
 </pre>
-
-
