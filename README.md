@@ -20,8 +20,8 @@
  获取插画排行榜上的投稿作品，默认为当时的排行榜。
  * getImageByKeyWord(key，option) //未完成  
  获取搜索关键词返回的作品，默认只返回前50项。
- * getFollowingIdList()  
-  获取当前关注用户的id和昵称，保存为followingIdList.json
+ * getFollowingIdList([id])  
+ 获取指定id用户关注列表，包括id和昵称，默认id参数为cookie所有者，保存为followingIdList.json
  * Option<pre>
   {
   rate:Number,		     //返回大于该分数的图片
