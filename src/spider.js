@@ -2,16 +2,17 @@
  * Created by Anshi on 2017/7/15.
  */
 
-const getFollowingIdList = require('./api/getFollowingIdList');
-const getImagesByUserId = require('./api/getImagesByUserId');
+const router = require('./core/router');
+
+
+
 
 
 module.exports = {
-  getImagesByUserId,
-  getFollowingIdList
+  getFollowingIdList(id){
+	return router(arguments,'profile');
+  }
 };
-
-
 
 
 

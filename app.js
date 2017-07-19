@@ -8,8 +8,9 @@
 const spider = require('./src/spider.js');
 
 
+
 // spider.getImagesByUserId(1565632);
-spider.getFollowingIdList();
+spider.getFollowingIdList(3132272,{path:'/data/anshi'});
 
 
 

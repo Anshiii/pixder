@@ -1,14 +1,18 @@
 /**
+ * Created by Anshi on 2017/7/19.
+ */
+/**
  * Created by Anshi on 2017/7/17.
  */
 const fs = require('fs');
-const isJson = require('./isJson')
+const config = require('../../config/config');
+const util = require('../util/index');
 
 
-module.exports = function (data, filePath) {
-  if (isJson(data)) {
+module.exports = function (path, data) {
+  if (util.isJson(data)) {
 	//存json
-	fs.writeFile(filePath, data, (err) => {
+	fs.writeFile(config.path + path + '.json', data, (err) => {
 	  if (err) throw err;
 	  console.log('The file has been saved!');
 	});
