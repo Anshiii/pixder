@@ -2,72 +2,70 @@
  * Created by Anshi on 2017/7/19.
  */
 
-const Request = require('../core/request');
+const Request = require('../core/Spider');
 const {URLSearchParams} = require('url');
-const userConfig = require('../../config/config')
+const userConfig = require('../../config/config');
 
 /*
- * 到profile能干嘛
+ * 到following能干嘛
  * 获取following列表
- * profile https://www.pixiv.net/bookmark.php?id=3132272
+ * following https://www.pixiv.net/bookmark.php?type=user&id=14914
  * */
 
 
-module.exports = class Profile {
-  constructor(args) {
-	this.arg = args && args[0];
-	this.baseUrl = userConfig.pageMap['profile'];
-	/*this.headers = {
-	 'User-Agent': userConfig.User_Agent,
-	 'Cookie': userConfig.cookie
-	 };*/
+module.exports = class Following {
+  constructor(id) {
+	this.id = id;
+	this.baseUrl = userConfig.pageMap['following'];
 	this.request = new Request();
 	this.followingList = [];
 	this.restPage = [];
-	this.fileName = this.arg || 'user'
+
+
   }
 
-  async run() {
-	let {pageList, idList} = await this.parseFirstPage();
-	 this.followingList = idList;
-	 this.restPage = pageList;
-	 await this.parseRestPage();
-	 if (this.followingList < 1) {
-	 console.log('用户未关注任何用户')
-	 }
+  getFollowingList() {
+	let _this = thisl
+	return this.parseFirstPage(obj => {
+	  let {pageList, idList, count} = obj;
+	  _this.followingList = idList;
+	  _this.restPage = pageList;
+	  return _this.parseRestPage();
+	}).catch(err => err)
+
 	/*this.followingList = [
-	  {
-		"name": "KOALA",
-		"id": 311182
-	  },
-	  {
-		"name": "ふぉ～ど",
-		"id": 370712
-	  },
-	  {
-		"name": "久方綜司",
-		"id": 80713
-	  }]*/
+	 {
+	 "name": "KOALA",
+	 "id": 311182
+	 },
+	 {
+	 "name": "ふぉ～ど",
+	 "id": 370712
+	 },
+	 {
+	 "name": "久方綜司",
+	 "id": 80713
+	 }]*/
   }
 
   parseFirstPage() {
 	let params, firstUri, _this = this;
-	if (this.arg) {
-	  params = new URLSearchParams({
-		id: this.arg
-	  });
-	} else {
-	  params = new URLSearchParams({
-		type: 'user'
-	  });
+	params = new URLSearchParams({
+	  type: 'user'
+	});
+	if (this.id) {
+	  params.add('id', this.id)
 	}
 	firstUri = this.baseUrl + '?' + params.toString();
+	//爬取当前id列表，和更多following列表页面列表。
 	return this.request.getDom(firstUri).then(dom => {
 	  let idList = _this.getFollowIdListFromPage(dom);
 	  let pageList = _this.getRestPage(dom);
+	  let count = _this.getFollowingCount(dom);
 	  return {
 		pageList,
-		idList
+		idList,
+		count
 	  }
 	}).catch(err => err)
   }
@@ -86,8 +84,13 @@ module.exports = class Profile {
 	  doms.forEach(item => {
 		_this.followingList = _this.followingList.concat(_this.getFollowIdListFromPage(item));
 	  })
+	  return _this.followingList;
 	})
 	.catch(err => err)
+  }
+
+  getFollowingCount($) {
+	return parseInt($('.count-badge').text(), 10);
   }
 
   getFollowIdListFromPage($) {
@@ -105,7 +108,7 @@ module.exports = class Profile {
 
   getRestPage($) {
 	let pageList = [];
-	let pageNum = $('._pager-complex') && $('._pager-complex').eq(0).find('a') || [];
+	let pageNum = $('._pager-complex').length && $('._pager-complex').eq(0).find('a') || [];
 	for (let i = 0; i < pageNum.length - 1; i++) {
 	  pageList.push(pageNum.eq(i).attr('href'));
 	}

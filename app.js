@@ -5,7 +5,7 @@
 /*默认任务（题外话：有种写gulp的感觉...gulp好像是流任务著称*/
 
 
-const spider = require('./src/spider.js');
+const spider = require('./src/pixder.js');
 
 
 

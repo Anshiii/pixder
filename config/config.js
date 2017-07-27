@@ -5,23 +5,18 @@ let cookie = 'input your cookie here';
 let User_Agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36';
 
 
-/*
- * home https://www.pixiv.net/
- * profile https://www.pixiv.net/bookmark.php?id=3132272
- * profile_illust https://www.pixiv.net/member_illust.php?id=14914
- * rank https://www.pixiv.net/ranking.php?mode=daily&content=illust
- *  	   https://www.pixiv.net/ranking.php?mode=daily&content=illust&date=20170716
- *  	   mode:weekly||monthly&content=illust&date=20170716
- * illust https://www.pixiv.net/member_illust.php?mode=medium&illust_id=63883176
- * */
-
 let pageMap = {
   home: 'https://www.pixiv.net/',
-  profile: 'https://www.pixiv.net/bookmark.php',
-  profile_illust: 'https://www.pixiv.net/member_illust.php',
+  ////实际是收藏页.
+  // type=user限定为关注的用户 & id=XXX
+  following: 'https://www.pixiv.net/bookmark.php?type=user',
+  //作品一览页面。id=xxx获取某个用户的作品。包括（插画，漫画，动图）三种类型，可选择爬取
+  //type=illust/manga/ugoira & id=xxx
+  works: 'https://www.pixiv.net/member_illust.php',
   illust: 'https://www.pixiv.net/member_illust.php',
   rank: 'https://www.pixiv.net/ranking.php'
 };
+
 
 let path = '/Users/Anshi/exper/spider';
 
@@ -40,5 +35,6 @@ module.exports = {
   cookie,
   User_Agent,
   pageMap,
-  path
+  path,
+  numMap
 };

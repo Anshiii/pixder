@@ -6,8 +6,15 @@ const cheerio = require('cheerio');
 const userConfig = require('../../config/config');
 
 
+/*interface Spider{
+ dom() //实例才有的dom，url，headers
+ run()
+
+
+ }*/
+
 //@params
-module.exports = class Request {
+module.exports = class Spider{
   constructor(option) {
 	this.option = option || {
 		  headers: {
@@ -17,19 +24,10 @@ module.exports = class Request {
 		};
   }
 
-  getDom(uri) {
-	let _this = this;
-	return fetch(uri, this.option)
+  async getDom(uri) {
+	await fetch(uri, this.option)
 	.then(res => res.text())
 	.then(body => cheerio.load(body))
 	.catch(err => err)
   }
-
-  getRes(uri) {
-	let _this = this;
-	return fetch(uri, this.option)
-	.then(res => res)
-	.catch(err => err)
-  }
-
 }
