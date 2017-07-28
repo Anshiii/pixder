@@ -9,46 +9,50 @@ const userConfig = require('../../config/config');
 module.exports = class Works {
   constructor(id, option) {
 	this.id = id;
-	this.type = option.type || ['illust'];
+	this.type = option.type;
 	this.baseUrl = userConfig.pageMap['works'];
 	this.request = new Request();
 	this.restPage = {};
 	this.firstPage = {};
-
 	this.illustsList = {};
 
   }
 
-   getIllustsList() {
+  getIllustsList() {
 	let _this = this;
 	let promiseArr = [];
-	for (let cls in this.type) {
-	  promiseArr.push(this.parseFirstPage(cls).then(() => {
-		_this.parseRestPage(cls);
-	  }));
+	for (let cls of this.type) {
+	  promiseArr.push(
+		  this.parseFirstPage(cls)
+		  .then(cls => _this.parseRestPage(cls))
+		  .catch(err => err));
 	}
 	return Promise.all(promiseArr);
   }
 
   getFirstPage() {
 	//https://www.pixiv.net/member_illust.php?type=illust&id=14914
+	let _this = this;
 	this.type.forEach(item => {
-	  let url = new URL(this.baseUrl);
+	  let url = new URL(_this.baseUrl);
 	  url.search = new URLSearchParams({
 		type: item,
-		id: this.id
+		id: _this.id
 	  });
-	  this.firstPage[item] = url.href;
+	  _this.firstPage[item] = url.href;
 	});
   }
 
   parseFirstPage(cls) {
 	this.getFirstPage();
 	let _this = this;
-	return this.request.getDom(this.firstPage[cls]).then($ => {
-	  this.restPage[cls] = _this.getRestPage($);
-	  this.illustsList[cls] = _this.getWorksId($);
-	}).catch(err => err)
+	return this.request.getDom(this.firstPage[cls])
+	.then($ => {
+	  _this.restPage[cls] = _this.getRestPage($);
+	  _this.illustsList[cls] = _this.getWorksId($);
+	  return cls;
+	})
+	.catch(err => err)
   }
 
   parseRestPage(cls) {
@@ -65,20 +69,21 @@ module.exports = class Works {
 	  doms.forEach(item => {
 		_this.illustsList[cls] = _this.illustsList[cls].concat(_this.getWorksId(item));
 	  })
+	  return _this;
 	})
 	.catch(err => err)
   }
 
-  static getRestPage($) {
+  getRestPage($) {
 	let pageList = [];
 	let pageNum = $('.page-list').length && $('.page-list').eq(0).find('a') || [];
-	for (let i = 0; i < pageNum.length - 1; i++) {
+	for (let i = 0; i < pageNum.length; i++) {
 	  pageList.push(pageNum.eq(i).attr('href'));
 	}
 	return pageList;
   }
 
-  static getWorksId($) {
+  getWorksId($) {
 	let itemList = $('.image-item');
 	let idList = [];
 	for (let i = 0; i < itemList.length; i++) {

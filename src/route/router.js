@@ -4,37 +4,31 @@
 const Following = require('../Page/Following');
 const Works = require('../Page/Works');
 const Illust = require('../Page/Illust');
-const process = require('../process/index');
 
 
-//获取handler里的文件，
-/*
- * home https://www.pixiv.net/
- * profile https://www.pixiv.net/bookmark.php?id=3132272
- * profile_illust https://www.pixiv.net/member_illust.php?id=14914
- * rank https://www.pixiv.net/ranking.php?mode=daily&content=illust
- *  	   https://www.pixiv.net/ranking.php?mode=daily&content=illust&date=20170716
- *  	   mode:weekly||monthly&content=illust&date=20170716
- * illust https://www.pixiv.net/member_illust.php?mode=medium&illust_id=63883176
- * */
+
 
 
 module.exports = class Router {
-
-  constructor(id, option, type) {
+  constructor(id, option = {}, type) {
 	this.id = id;
 	this.option = option;
+
+	if (!option.type || !option.type.length || option.type.length < 1) {
+	  this.option.type = ['illust']
+	}
 	this.type = type;
 	this.page = [];
+	this.task = [];
 
-
+	this.taskOrder()
   }
 
   async exec() {
 
   }
 
-  taskList() {
+  pageList() {
 	switch (this.type) {
 	  case 0:
 		//getFollowingIllusts
@@ -45,53 +39,62 @@ module.exports = class Router {
   }
 
   async taskOrder() {
-	this.taskList();
+	this.pageList();
 	let _this = this;
 	switch (this.type) {
 	  case 0:
-
 		//getFollowingIllusts
-		let list = await this.page[0].getfollowingList();
+		//todo   this.task.push(this.page[0].getfollowingList());
+		let list = await this.page[0].getFollowingList() || [];
 
 
 		//getIllustsList
 		let illustsList = {};
+		let illustsListPromiseArray = [];
+		if (list.length < 1) {
+		  return '该用户没有关注任何用户';
+		}
+		//根据 关注id的数量建立n个Works对象
 		list.forEach(item => {
-		  this.page[1].push(new Works(item, this.option));
+		  let work = new Works(item.id, _this.option);
+		  _this.page[1].push(work);
+		  illustsListPromiseArray.push(work.getIllustsList());
 		});
-		let promiseArray = this.page[1].map(work => {
-		  return work.getIllustsList();
-		});
-		await Promise.all(promiseArray);
-
-		this.option.type.forEach(item => {
-		  illustsList[item] = [];
-		  this.page[1].forEach(work => {
-			illustsList[item] = illustsList[item].concat(work.illustsList[item]);
+		//todo this.task.push(Promise.all(promiseArray))
+		await Promise.all(illustsListPromiseArray).catch(err => err);
+		this.page[1].forEach(work => {
+		  this.option.type.forEach(cls => {
+			if (!illustsList[cls]) {
+			  illustsList[cls] = [];
+			}
+			illustsList[cls].push(work.illustsList[cls]);
 		  })
 		});
 
-
-		//getImage
+		//getImageUri
 		let imgUriList = [];
+		let imgUriListPromiseArray = [];
 		this.option.type.forEach(item => {
 		  illustsList[item].forEach(id => {
-		    this.page[2].push(new Illust(id,_this.option))
+			let illust = new Illust(id, _this.option, item);
+			this.page[2].push(illust);
+			let pro = illust.getIllustUri();
+			if (pro) {
+			  imgUriListPromiseArray.push(pro)
+			}
 		  })
 		});
-		let promiseArray2 = this.page[2].map(illust =>{
-		  return illust.getIllustUri();
-		});
-		await Promise.all(promiseArray2);
+		//todo this.task.push(Promise.all(promiseArray2))
+		await Promise.all(imgUriListPromiseArray).catch(err => err);
 
-		imgUriList = this.page[2].map(illust =>{
+
+		imgUriList = this.page[2].map(illust => {
 		  return illust
 		});
 
+		console.log(imgUriList);
 		//todo
 		//获取到所有图片的uri之后，陆续存起来。
-
-
 	}
   }
 

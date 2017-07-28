@@ -14,20 +14,23 @@ const userConfig = require('../../config/config');
  }*/
 
 //@params
-module.exports = class Spider{
+module.exports = class Spider {
   constructor(option) {
-	this.option = option || {
-		  headers: {
-			'User-Agent': userConfig.User_Agent,
-			'Cookie': userConfig.cookie
-		  }
-		};
+	this.option = {
+	  headers: {
+		'Cookie': userConfig.cookie
+	  }
+	};
   }
 
-  async getDom(uri) {
-	await fetch(uri, this.option)
-	.then(res => res.text())
-	.then(body => cheerio.load(body))
+  getDom(uri) {
+	return fetch(uri, this.option)
+	.then(res => {
+	  return res.text()
+	})
+	.then(body => {
+	  return cheerio.load(body)
+	})
 	.catch(err => err)
   }
 }

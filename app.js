@@ -4,13 +4,13 @@
 /*在这里编写任务*/
 /*默认任务（题外话：有种写gulp的感觉...gulp好像是流任务著称*/
 
-
+require('babel-register');
 const spider = require('./src/pixder.js');
 
 
 
 // spider.getImagesByUserId(1565632);
-spider.getFollowingIdList(3132272,{path:'/data/anshi'});
+spider.getFollowingIllusts();
 
 
 

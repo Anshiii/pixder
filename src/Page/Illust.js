@@ -8,7 +8,7 @@
 const Request = require('../core/Spider');
 const {URL, URLSearchParams} = require('url');
 const userConfig = require('../../config/config');
-const process = require('process');
+const fetch = require('node-fetch');
 
 /*
  * illust https://www.pixiv.net/member_illust.php
@@ -35,10 +35,11 @@ module.exports = class Illust {
   }
 
   getIllustUri() {
-	return this.parseFirstPage.then(() => {
+	let _this = this;
+	return this.parseFirstPage().then(() => {
 	  if (this.isOk()) {
 		//继续
-		return this.parseImgPage()
+		return this.parseImgPage().then(() => _this)
 	  } else {
 		return process.nextTick(() => {
 		  this.uri = "";
@@ -63,6 +64,7 @@ module.exports = class Illust {
 	let _this = this;
 	return this.request.getDom(this.imgPage).then($ => {
 	  _this.uri = _this.getUri($, this.type);
+	  _this.getImgType();
 	}).catch(err => err)
   }
 
@@ -86,7 +88,7 @@ module.exports = class Illust {
   }
 
 
-  static getUri($, cls) {
+  getUri($, cls) {
 	let uri;
 	switch (cls) {
 	  case 'manga':
@@ -104,13 +106,13 @@ module.exports = class Illust {
   }
 
   //获取文件类型（可能没必要。。。）
-  static getImgType(uri) {
-	let tem = uri.substring(uri.indexOf('/img/')).split('/');
+  getImgType() {
+	let tem = this.uri.substring(this.uri.indexOf('/img/')).split('/');
 	let typeTem = tem[tem.length - 1];
-	return typeTem.substring(typeTem.indexOf('.') + 1);
+	this.info.imgType = typeTem.substring(typeTem.indexOf('.') + 1);
   }
 
-  static getDay(uri) {
+  getDay(uri) {
 	let tem = uri.substring(uri.indexOf('/img/')).split('/');
 	return tem[2] + tem[3] + tem[4];
   }
@@ -118,13 +120,17 @@ module.exports = class Illust {
   isOk() {
 	let result = true;
 	let option = this.option,
-		info = this.info;
+		info = this.info,
+		keys = Object.keys(option);
 
-	if (!option || (typeof option) !== 'object') {
+	if (!option || (typeof option) !== 'object' || keys.length < 2) {
 	  return result
 	}
 
-	while (result) {
+	let j = 0;
+	while (!result || j < keys.length) {
+	  let i = option[keys[j]];
+	  j++;
 	  switch (i) {
 		case 'rate':
 		  if (parseInt(option.rate) > parseInt(info.rate)) {
@@ -161,15 +167,15 @@ module.exports = class Illust {
   }
 
 
-  /*getStream() {
-   return fetch(this.uri, {
-   headers: {
-   referer: uri
-   }
-   })
-   .then(res => res)
-   .catch(err => err)
-   }*/
+  getStream() {
+	return fetch(this.uri, {
+	  headers: {
+		referer: this.imgPage
+	  }
+	})
+	.then(res => res)
+	.catch(err => err)
+  }
 
 
 };

@@ -16,7 +16,7 @@ module.exports = {
    }*/
 
   getFollowingIllusts(id, option){
-  new Router(id,option,0)
+	new Router(id, option, 0)
   }
 };
 
