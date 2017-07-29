@@ -16,6 +16,8 @@
 ## Api
  * getImagesByUserId(id,option)  
  获取某个用户id的投稿作品
+ * getFollowingIllusts(id,option)
+ 
  * getImageFromRank(option) //未完成  
  获取插画排行榜上的投稿作品，默认为当时的排行榜。
  * getImageByKeyWord(key，option) //未完成  
@@ -26,6 +28,7 @@
   {
   rate:Number,		     //返回大于该分数的图片
   time:String/Array, 	//格式如'20170707'如果参数为字符串，则默认为该从日期至今的作品，如果为数组，则为数组内两个日期之间的作品
-  day:String		   //仅获取该日期的数据
+  day:String,		   //仅获取该日期的数据
+  type:['illust','manga','ugoira']      //限定爬取的图片类型，插画，漫画，动图。默认为插画。
   }
 </pre>

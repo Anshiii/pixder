@@ -2,7 +2,7 @@
   "name": "spider-pixiv",
   "version": "1.0.0",
   "description": "",
-  "main": "spider.js",
+  "main": "app.js",
   "scripts": {
     "test": "babel-node bin/app.js --presets es2015"
   },
@@ -16,8 +16,19 @@
     "node-fetch": "^1.7.1",
     "progress": "^2.0.0"
   },
-  "protocol": "inspector",
+  "protocol": "auto",
   "dependencies": {
-    "async": "^2.5.0"
-  }
+    "async": "^2.5.0",
+    "fs-extra": "^4.0.0"
+  },
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "node": true
+        }
+      }
+    ]
+  ]
 }
