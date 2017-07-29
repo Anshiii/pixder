@@ -29,11 +29,11 @@ module.exports = class Following {
 	  let {pageList, idList, count} = obj;
 	  _this.followingList = idList;
 	  _this.restPage = pageList;
-	}).
-	then(()=>{
+	})
+	.then(() => {
 	  return _this.parseRestPage();
 	})
-  .catch(err => err)
+	.catch(err => err)
 
 	/*this.followingList = [
 	 {
@@ -75,7 +75,7 @@ module.exports = class Following {
   parseRestPage() {
 	let requestArr = [];
 	let _this = this;
-	if(this.restPage.length>0){
+	if (this.restPage.length > 0) {
 	  this.restPage.forEach(item => {
 		requestArr.push(this.request.getDom(this.baseUrl + item));
 	  });

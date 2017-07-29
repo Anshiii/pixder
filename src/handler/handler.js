@@ -24,8 +24,8 @@ module.exports = class Handler {
 
   saveImg() {
 	let _this = this;
-
-	fs.emptyDir(this.filePath).then(() => {
+	fs.emptyDir(this.filePath)
+	.then(() => {
 	  this.items.forEach(item => {
 		const dest = fs.createWriteStream(`${_this.filePath}/${item.id}.${item.info.imgType}`);
 		item.getStream().then(data => {
@@ -33,7 +33,7 @@ module.exports = class Handler {
 		})
 	  })
 	})
-
+	.catch(err => err)
   }
 }
 
