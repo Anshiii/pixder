@@ -22,18 +22,13 @@ module.exports = class Following {
 	this.restPage = [];
   }
 
-  getFollowingList() {
+  async getFollowingList() {
 	let _this = this;
-	return this.parseFirstPage()
-	.then(obj => {
-	  let {pageList, idList, count} = obj;
-	  _this.followingList = idList;
-	  _this.restPage = pageList;
-	})
-	.then(() => {
-	  return _this.parseRestPage();
-	})
-	.catch(err => err)
+	await this.parseFirstPage();
+	if (this.restPage.length > 0) {
+	  await _this.parseRestPage();
+	}
+	return this.followingList;
 
 	/*this.followingList = [
 	 {
@@ -64,11 +59,8 @@ module.exports = class Following {
 	  let idList = _this.getFollowIdListFromPage(dom);
 	  let pageList = _this.getRestPage(dom);
 	  let count = _this.getFollowingCount(dom);
-	  return {
-		pageList,
-		idList,
-		count
-	  }
+	  _this.followingList = idList;
+	  _this.restPage = pageList;
 	}).catch(err => err)
   }
 
@@ -85,7 +77,6 @@ module.exports = class Following {
 	  doms.forEach(item => {
 		_this.followingList = _this.followingList.concat(_this.getFollowIdListFromPage(item));
 	  })
-	  return _this.followingList;
 	})
 	.catch(err => err)
   }

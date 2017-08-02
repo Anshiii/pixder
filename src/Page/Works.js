@@ -18,16 +18,21 @@ module.exports = class Works {
 
   }
 
-  getIllustsList() {
-	let _this = this;
-	let promiseArr = [];
+  async getIllustsList() {
+
+
 	for (let cls of this.type) {
-	  promiseArr.push(
-		  this.parseFirstPage(cls)
-		  .then(cls => _this.parseRestPage(cls))
-		  .catch(err => err));
+	  await this.handlePage(cls);
+	  console.log(this.id,cls);
 	}
-	return Promise.all(promiseArr);
+	return this.illustsList;
+  }
+
+  async handlePage(cls) {
+	await this.parseFirstPage(cls);
+	if (this.restPage[cls].length > 0) {
+	  await this.parseRestPage(cls);
+	}
   }
 
   getFirstPage() {

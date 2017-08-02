@@ -24,6 +24,8 @@ module.exports = class Spider {
   }
 
   getDom(uri) {
+
+    console.log(uri);
 	return fetch(uri, this.option)
 	.then(res => {
 	  return res.text()

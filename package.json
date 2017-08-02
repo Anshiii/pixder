@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "babel-node bin/app.js --presets es2015"
+    "test": "babel-node  app.js",
+    "test2": "babel-cli --debug --presets es2015 -- test.js --debug"
   },
   "author": "",
   "license": "ISC",
@@ -20,15 +21,5 @@
   "dependencies": {
     "async": "^2.5.0",
     "fs-extra": "^4.0.0"
-  },
-  "presets": [
-    [
-      "env",
-      {
-        "targets": {
-          "node": true
-        }
-      }
-    ]
-  ]
+  }
 }

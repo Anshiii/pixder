@@ -1,7 +1,8 @@
 /**
  * Created by Anshi on 2017/7/17.
  */
-let cookie = "input your cookie";
+const COOKIES = require('./cookie.js')
+let cookie = COOKIES.cookie;
 let pageMap = {
   home: 'https://www.pixiv.net/',
   ////实际是收藏页.

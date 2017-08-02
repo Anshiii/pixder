@@ -34,18 +34,15 @@ module.exports = class Illust {
 	this.info = {};
   }
 
-  getIllustUri() {
-	let _this = this;
-	return this.parseFirstPage().then(() => {
-	  if (this.isOk()) {
-		//继续
-		return this.parseImgPage().then(() => _this)
-	  } else {
-		return process.nextTick(() => {
-		  this.uri = "";
-		})
-	  }
-	}).catch(err => err)
+  async getIllustUri() {
+	await this.parseFirstPage();
+	if (this.isOk()) {
+	  await this.parseImgPage();
+	} else {
+	  //该图片信息不符合配置内容。
+	  this.uri = "";
+	}
+	return this.uri;
   }
 
   getImgPage() {
