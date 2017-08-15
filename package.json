@@ -4,18 +4,16 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "babel-node  app.js",
-    "test2": "babel-cli --debug --presets es2015 -- test.js --debug"
+    "test": "babel-node  app.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
-    "babel-register": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
     "cheerio": "^1.0.0-rc.2",
-    "node-fetch": "^1.7.1",
-    "progress": "^2.0.0"
+    "node-fetch": "^1.7.1"
   },
   "protocol": "auto",
   "dependencies": {

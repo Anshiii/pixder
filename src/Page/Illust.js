@@ -5,7 +5,7 @@
  * Created by Anshi on 2017/7/19.
  */
 
-const Request = require('../core/Spider');
+const spider = require('../core/Spider');
 const {URL, URLSearchParams} = require('url');
 const userConfig = require('../../config/config');
 const fetch = require('node-fetch');
@@ -22,7 +22,7 @@ module.exports = class Illust {
 	this.option = option;
 	this.type = type;
 	this.baseUrl = userConfig.pageMap['illust'];
-	this.request = new Request();
+	this.request = spider;
 	this.info = {};
 	this.imgPage = "";
 	this.firstPage = "";
@@ -163,15 +163,15 @@ module.exports = class Illust {
 	return result;
   }
 
-
+ //todo
   getStream() {
-	return fetch(this.uri, {
+	/*return fetch(this.uri, {
 	  headers: {
 		referer: this.imgPage
 	  }
 	})
 	.then(res => res)
-	.catch(err => err)
+	.catch(err => err)*/
   }
 
 

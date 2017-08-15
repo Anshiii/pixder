@@ -2,7 +2,7 @@
  * Created by Anshi on 2017/7/19.
  */
 
-const Request = require('../core/Spider');
+const spider = require('../core/Spider');
 const {URLSearchParams} = require('url');
 const userConfig = require('../../config/config');
 
@@ -17,7 +17,7 @@ module.exports = class Following {
   constructor(id) {
 	this.id = id;
 	this.baseUrl = userConfig.pageMap['following'];
-	this.request = new Request();
+	this.request = spider;
 	this.followingList = [];
 	this.restPage = [];
   }

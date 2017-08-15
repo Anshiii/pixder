@@ -3,7 +3,6 @@
  */
 
 
-require('babel-register');
 const spider = require('./src/pixder.js');
 
 

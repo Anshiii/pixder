@@ -2,7 +2,7 @@
  * Created by Anshi on 2017/7/26.
  */
 
-const Request = require('../core/Spider');
+const spider = require('../core/Spider');
 const {URL, URLSearchParams} = require('url');
 const userConfig = require('../../config/config');
 
@@ -11,7 +11,7 @@ module.exports = class Works {
 	this.id = id;
 	this.type = option.type;
 	this.baseUrl = userConfig.pageMap['works'];
-	this.request = new Request();
+	this.request = spider;
 	this.restPage = {};
 	this.firstPage = {};
 	this.illustsList = {};
@@ -23,7 +23,7 @@ module.exports = class Works {
 
 	for (let cls of this.type) {
 	  await this.handlePage(cls);
-	  console.log(this.id,cls);
+	  console.log(this.id, cls);
 	}
 	return this.illustsList;
   }
@@ -96,6 +96,4 @@ module.exports = class Works {
 	}
 	return idList;
   }
-
-
 }
