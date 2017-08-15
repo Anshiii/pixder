@@ -22,45 +22,54 @@ class Spider {
 		'Cookie': userConfig.cookie
 	  }
 	};
-	this.maxHttp = 10;
+	this.maxHttp = 5;
 	this.currentHttp = 0;
 	this.line = [];
+	this.uriQueue = [];
+
+	this.eventPromise();
   }
 
   eventPromise() {
-    let _this = this;
-	return new Promise(res => {
-	  console.log('监听的:'+_this.line.push)
-	  event.on("decrease", () => {
-	    //判断减了多少次。
+	let _this = this;
+	event.on("decrease", () => {
+	  //添加任务。
+	  if(_this.uriQueue.length>0){
+		let uri = _this.uriQueue.shift();
+		event.emit(uri, _this.fetchDom(uri));
+	  }
+	})
+  }
 
-		//返回队列中第一个的Dom promise
-		//获取队列中的第一个promise，手动resolve，返回dom promise
-		res('ok')
+  promiseUri(uri) {
+	return new Promise(res => {
+	  event.on(uri, promise => {
+		res(promise)
 	  })
 	})
   }
 
-  async getDom(uri) {
-	let _this = this;
-	if (this.currentHttp > this.maxHttp) {
-	  //等待一会。
-	  let pro = new Promise();
-	  _this.line.push(_this.currentHttp);
-
-
-	  await this.eventPromise();
+  getDom(uri) {
+	if (this.currentHttp >= this.maxHttp) {
+	  this.uriQueue.push(uri);
+	  return this.promiseUri(uri);
+	} else {
+	  return this.fetchDom(uri)
 	}
-	console.log(`当前连接总数${this.currentHttp},即访问${uri}`);
+  }
+
+
+  fetchDom(uri) {
+	let _this = this;
 	this.currentHttp++;
+	console.log(`当前连接总数${this.currentHttp}`);
 	return fetch(uri, this.option)
 	.then(res => {
-	  event.emit("decrease")
-	  _this.currentHttp--; 
-
 	  return res.text()
 	})
 	.then(body => {
+	  event.emit("decrease");
+	  _this.currentHttp--;
 	  return cheerio.load(body)
 	})
 	.catch(err => err)

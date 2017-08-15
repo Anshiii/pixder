@@ -163,16 +163,17 @@ module.exports = class Illust {
 	return result;
   }
 
- //todo
+  //todo
   getStream() {
-	/*return fetch(this.uri, {
+	return fetch(this.uri, {
 	  headers: {
 		referer: this.imgPage
 	  }
 	})
-	.then(res => res)
-	.catch(err => err)*/
+	.then(res => {
+	  return res
+	})
+	.catch(err => err)
   }
-
 
 };
