@@ -59,10 +59,18 @@ module.exports = class Illust {
   parseImgPage() {
 	this.getImgPage();
 	let _this = this;
-	return this.request.getDom(this.imgPage).then($ => {
-	  _this.uri = _this.getUri($, this.type);
+	if(this.firstPage === this.imgPage){
+	  _this.uri = _this.getUri(_this.$dom);
 	  _this.getImgType();
-	}).catch(err => err)
+	  delete _this.$dom;
+	  return Promise.resolve();
+	}else{
+	  return this.request.getDom(this.imgPage).then($ => {
+		_this.uri = _this.getUri($);
+		_this.getImgType();
+	  }).catch(err => err)
+	}
+
   }
 
   getFirstPage() {
@@ -81,13 +89,14 @@ module.exports = class Illust {
 	  _this.info.rate = $('.rated-count').text();
 	  _this.info.userId = $("[name='user_id']").val();
 	  _this.info.Day = _this.getDay($('.works_display').find('img').attr('src'));
+	  _this.$dom = $;
 	}).catch(err => err)
   }
 
 
   getUri($, cls) {
 	let uri;
-	switch (cls) {
+	switch (this.type) {
 	  case 'manga':
 		uri = [];
 		let imgs = $('.image');

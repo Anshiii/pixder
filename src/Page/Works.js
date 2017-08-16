@@ -19,8 +19,6 @@ module.exports = class Works {
   }
 
   async getIllustsList() {
-
-
 	for (let cls of this.type) {
 	  await this.handlePage(cls);
 	  console.log(this.id, cls);

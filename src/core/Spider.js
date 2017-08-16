@@ -34,7 +34,8 @@ class Spider {
 	let _this = this;
 	event.on("decrease", () => {
 	  //添加任务。
-	  if(_this.uriQueue.length>0){
+	  if (_this.uriQueue.length > 0) {
+	    console.log(_this.uriQueue.shift())
 		let uri = _this.uriQueue.shift();
 		event.emit(uri, _this.fetchDom(uri));
 	  }
@@ -61,8 +62,8 @@ class Spider {
 
   fetchDom(uri) {
 	let _this = this;
+	console.log(`访问${uri}`);
 	this.currentHttp++;
-	console.log(`当前连接总数${this.currentHttp}`);
 	return fetch(uri, this.option)
 	.then(res => {
 	  return res.text()
@@ -71,19 +72,6 @@ class Spider {
 	  event.emit("decrease");
 	  _this.currentHttp--;
 	  return cheerio.load(body)
-	})
-	.catch(err => err)
-  }
-
-  getStream(uri, imgPage) {
-
-	return fetch(uri, {
-	  headers: {
-		referer: imgPage
-	  }
-	})
-	.then(res => {
-	  res
 	})
 	.catch(err => err)
   }

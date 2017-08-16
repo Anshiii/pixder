@@ -6,6 +6,7 @@
  */
 const fs = require('fs');
 const config = require('../../config/config');
+const EventEmitter = require('events');
 
 
 module.exports = class Handler {
@@ -18,43 +19,52 @@ module.exports = class Handler {
 	this.count = 0;
 	this.readableQuene = [];
 
+	this.allCount = 0;
+	this.allCount2 = 0;
+
+	this.maxStream = 2;
+
+	this.event = new EventEmitter();
+	this.eventOn()
 
   }
 
+  eventOn() {
+	let _this = this;
+	this.event.on('readEnd', () => {
+	  if (_this.readableQuene.length > 0) {
+		_this.saveStream(_this.readableQuene.shift());
+	  }
+	})
+  }
 
-  async saveImg(illust) {
+
+  saveImg(illust) {
+	if (this.count >= this.maxStream) {
+	  this.readableQuene.push(illust)
+	} else {
+	  this.saveStream(illust);
+	}
+  }
+
+
+  saveStream(illust) {
 	let filePath = `${process.cwd()}/data/${illust.info.userId}`;
-
 	if (!fs.existsSync(filePath)) {
 	  fs.mkdir(filePath)
 	}
-
-	const dest = fs.createWriteStream(`${filePath}/${illust.id}.${illust.info.imgType}`);
 	let _this = this;
-	illust.getStream().then(data => {
-	  console.log(_this.count)
-	  //readable.pipe(writable);
-	  data.body.on('end', () => {
-		if (_this.readableQuene.length > 0) {
-		  let rw = _this.readableQuene.shift();
-		  rw.r.pipe(rw.w)
-		}
-		console.log('图片读取完了');
+	this.count++;
+	console.log(`当前正获取图片数：${this.count}，获取图片总数${++this.allCount}`);
+	illust.getStream().then(data => data.body).then(rd => {
+	  const dest = fs.createWriteStream(`${filePath}/${illust.id}.${illust.info.imgType}`);
+	  rd.on('end', () => {
+		_this.count--;
+		_this.event.emit('readEnd')
+		console.log(`读取图片总数${++this.allCount2}`)
 	  });
-	  dest.on('pipe', () => {
-		_this.count++;
-		console.log('写入图片数:' + _this.count);
-	  });
-
-	  if (_this.count < 3) {
-		data.body.pipe(dest);
-	  } else {
-		_this.readableQuene.push({r: data.body, w: dest})
-	  }
-
-
-	})
-	.catch(err => err)
+	  rd.pipe(dest);
+	}).catch();
   }
 };
 
